@@ -1,0 +1,102 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: tech-assistant-system
+
+  profiles:
+    active: local
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 7
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: your_mysql_password
+    url: jdbc:mysql://localhost:3306/aiqna?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+langchain4j:
+  dashscope:
+    api-key: your_dashscope_api_key
+    chat-model-name: qwen-max
+    embedding-model-name: text-embedding-v4
+
+app:
+  jwt:
+    secret: your_jwt_secret_key_here
+
+tech:
+  assistant:
+    name: 企业级智能技术助手
+    version: 1.0.0
+    llm:
+      active-model: qwen-max
+      models:
+        - name: qwen-max
+          description: 通义千问 Max
+          enabled: true
+        - name: qwen-plus
+          description: 通义千问 Plus
+          enabled: false
+    knowledge-base:
+      max-documents: 50000
+      supported-tech-stacks:
+        - Spring Boot
+        - Docker
+        - Java
+        - Python
+        - Vue
+        - React
+        - MySQL
+        - Redis
+        - TypeScript
+        - Node.js
+        - Kubernetes
+        - PostgreSQL
+        - MongoDB
+      knowledge-types: ["CONFIG", "API", "TROUBLESHOOTING", "BEST_PRACTICE", "TUTORIAL"]
+    retrieval:
+      enable-hybrid-search: false
+      bm25-weight: 0.4
+      vector-weight: 0.4
+      rrf-weight: 0.2
+      top-k: 10
+      similarity-threshold: 0.65
+      rrf-k: 60
+      candidate-pool-size: 80
+      rag-context-doc-limit: 5
+      rag-char-budget-per-doc: 1200
+      cache-enabled: true
+      cache-ttl-seconds: 3600
+      redis-cache-enabled: true
+    routing:
+      enable-smart-routing: true
+      rule-threshold: 0.55
+      vector-threshold: 0.72
+      intent-types: ["CONFIG_QUERY", "API_RECOMMENDATION", "TROUBLESHOOTING", "GENERAL_KNOWLEDGE"]
+
+logging:
+  level:
+    com.tech.assistant: info
+    org.springframework.data.elasticsearch: warn

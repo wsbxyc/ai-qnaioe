@@ -1,0 +1,114 @@
+# ==============================================
+# 前端 (ai-QNA-vue)
+# ==============================================
+
+# Node 依赖
+ai-QNA-vue/node_modules/
+
+# 构建产物
+ai-QNA-vue/dist/
+ai-QNA-vue/dist-ssr/
+
+# 本地开发文件
+ai-QNA-vue/*.local
+
+# 日志
+ai-QNA-vue/logs/
+ai-QNA-vue/*.log
+ai-QNA-vue/npm-debug.log*
+ai-QNA-vue/yarn-debug.log*
+ai-QNA-vue/yarn-error.log*
+ai-QNA-vue/pnpm-debug.log*
+ai-QNA-vue/lerna-debug.log*
+
+# IDE
+ai-QNA-vue/.idea/
+ai-QNA-vue/.vscode/*
+!ai-QNA-vue/.vscode/extensions.json
+
+# ==============================================
+# 后端 (ai-QNA-server)
+# ==============================================
+
+# Maven 构建产物
+ai-QNA-server/target/
+ai-QNA-server/build/
+
+# Java 编译文件
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven 本地配置
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+ai-QNA-server/.idea/
+ai-QNA-server/*.iml
+ai-QNA-server/*.iws
+ai-QNA-server/*.ipr
+
+# STS
+ai-QNA-server/.apt_generated
+ai-QNA-server/.classpath
+ai-QNA-server/.factorypath
+ai-QNA-server/.project
+ai-QNA-server/.settings
+ai-QNA-server/.springBeans
+ai-QNA-server/.sts4-cache
+
+# NetBeans
+ai-QNA-server/nbproject/private/
+ai-QNA-server/nbbuild/
+ai-QNA-server/nbdist/
+ai-QNA-server/.nb-gradle/
+
+# ==============================================
+# 数据爬虫 (data-collector)
+# ==============================================
+
+# Python 缓存
+data-collector/__pycache__/
+*.pyc
+
+# Python 虚拟环境
+data-collector/venv/
+data-collector/env/
+data-collector/.venv/
+
+# 爬虫生成的文档数据（文件太大）
+data-collector/chinese_tech_docs/
+data-collector/full_tech_docs/
+data-collector/tech_docs/
+data-collector/*.json
+
+# ==============================================
+# 全局
+# ==============================================
+
+# 日志
+*.log
+logs/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.swp
+*.swo
+*~
+
+# 敏感配置文件（如果有）
+application.yml
+application-docker.yml
+docker-compose.yml
+*.env
+*.env.local
+# Windows脚本
+ai-QNA-server/*.bat
+
+# Markdown文档（可选）
+*.md

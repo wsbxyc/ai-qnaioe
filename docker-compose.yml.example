@@ -1,0 +1,110 @@
+# 企业级技术助手 - 完整 Docker Compose 配置
+# 包含：MySQL、Redis、Elasticsearch、后端服务、前端服务、Nginx 代理
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: ai-qna-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_DATABASE: aiqna
+      MYSQL_USER: aiqna
+      MYSQL_PASSWORD: your_mysql_user_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - ai-qna-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: ai-qna-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - ai-qna-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Elasticsearch 搜索引擎
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+    container_name: ai-qna-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - ai-qna-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务
+  backend:
+    build:
+      context: ./ai-QNA-server
+      dockerfile: Dockerfile
+    container_name: ai-qna-backend
+    environment:
+      # 使用环境变量覆盖配置，避免 profile 问题
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/aiqna?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - ai-qna-network
+    restart: unless-stopped
+
+  # 前端服务 (包含 Nginx)
+  frontend:
+    build:
+      context: ./ai-QNA-vue
+      dockerfile: Dockerfile
+    container_name: ai-qna-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - ai-qna-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-data:
+  es-data:
+
+networks:
+  ai-qna-network:
+    driver: bridge
